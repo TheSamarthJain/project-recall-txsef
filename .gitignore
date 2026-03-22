@@ -9,7 +9,13 @@ __pycache__/
 *.pyd
 
 # Model files (too large for GitHub)
-models/*.pkl
+# Keep small model files, ignore large data
+data/pitt_alzheimers/*.mp3
+data/pitt_healthy/*.mp3
+data/pitt_orig_alzheimers/*.mp3
+data/pitt_orig_healthy/*.mp3
+data/vas_alzheimers/*.mp3
+data/vas_healthy/*.mp3
 
 # Results
 results/*.png
