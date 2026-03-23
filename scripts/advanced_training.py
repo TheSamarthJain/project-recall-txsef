@@ -6,10 +6,25 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, VotingClassifier
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, roc_auc_score, roc_curve
-import xgboost as xgb
-import lightgbm as lgb
-from tensorflow import keras
-from tensorflow.keras import layers
+try:
+    import xgboost as xgb
+    XGBOOST_AVAILABLE = True
+except Exception:
+    print("⚠️  XGBoost not available (missing libomp?), skipping.")
+    XGBOOST_AVAILABLE = False
+try:
+    import lightgbm as lgb
+    LIGHTGBM_AVAILABLE = True
+except Exception:
+    print("⚠️  LightGBM not available, skipping.")
+    LIGHTGBM_AVAILABLE = False
+try:
+    from tensorflow import keras
+    from tensorflow.keras import layers
+    TENSORFLOW_AVAILABLE = True
+except Exception:
+    print("⚠️  TensorFlow not available, skipping keras import.")
+    TENSORFLOW_AVAILABLE = False
 import pickle
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -73,7 +88,10 @@ models = {
         probability=True,
         random_state=42
     ),
-    'XGBoost': xgb.XGBClassifier(
+}
+
+if XGBOOST_AVAILABLE:
+    models['XGBoost'] = xgb.XGBClassifier(
         n_estimators=300,
         max_depth=7,
         learning_rate=0.05,
@@ -82,8 +100,10 @@ models = {
         scale_pos_weight=len(y[y == 0]) / len(y[y == 1]),
         random_state=42,
         eval_metric='logloss'
-    ),
-    'LightGBM': lgb.LGBMClassifier(
+    )
+
+if LIGHTGBM_AVAILABLE:
+    models['LightGBM'] = lgb.LGBMClassifier(
         n_estimators=300,
         max_depth=7,
         learning_rate=0.05,
@@ -94,7 +114,6 @@ models = {
         random_state=42,
         verbose=-1
     )
-}
 
 # Cross-validation
 sgkf = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=42)

@@ -330,7 +330,14 @@ def process_all_corpora():
             print(f"\n{'=' * 70}")
             print(f"Processing {corpus_name.upper()} Corpus...")
             print(f"{'=' * 70}")
-            labels_df = pd.read_csv(labels_file)
+            try:
+                labels_df = pd.read_csv(labels_file)
+            except pd.errors.EmptyDataError:
+                print(f"  ⚠️ {corpus_name} label file is empty, skipping...")
+                continue
+            if labels_df.empty or 'filename' not in labels_df.columns:
+                print(f"  ⚠️ {corpus_name} label file is empty, skipping...")
+                continue
             total_files = len(labels_df)
             print(f"Total files to process: {total_files}")
 

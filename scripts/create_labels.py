@@ -45,8 +45,11 @@ def create_labels_csv(ad_folder, hc_folder, output_csv):
 
     print(f"✅ Created {output_csv}")
     print(f"   Total files: {len(df)}")
-    print(f"   AD: {len(df[df['label'] == 'AD'])}")
-    print(f"   HC: {len(df[df['label'] == 'HC'])}")
+    if 'label' in df.columns:
+        print(f"   AD: {len(df[df['label'] == 'AD'])}")
+        print(f"   HC: {len(df[df['label'] == 'HC'])}")
+    else:
+        print("   (no files found — skipping label breakdown)")
     print()
 
     return df
